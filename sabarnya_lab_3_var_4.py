@@ -1,0 +1,45 @@
+# Додано підклас, який адаптує поведінку суперкласу
+
+class Person:
+    def __init__(self, name, job=None, pay=0):
+        self.name = name
+        self.job = job
+        self.pay = pay
+
+    def lastName(self):
+        return self.name.split()[-1]
+
+    def giveRaise(self, percent):
+        self.pay = int(self.pay * (1 + percent))
+
+    def __str__(self):
+        return '[Person: %s, %s]' % (self.name, self.pay)
+
+
+class Manager(Person):
+    def giveRaise(self, percent, bonus=0.10):
+        super().giveRaise(percent + bonus)
+
+
+if __name__ == '__main__':
+    bob = Person('Bob Smith')
+    sue = Person('Sue Jones', job='dev', pay=100000)
+    tom = Manager('Tom Jones', 'mgr', 50000)
+
+    print(bob)
+    print(sue)
+    print(tom)
+
+    print(bob.lastName(), sue.lastName(), tom.lastName())
+
+    sue.giveRaise(0.10)
+    print(sue)
+
+    tom.giveRaise(0.10)
+    print(tom)
+
+    # --- Додано узагальнену обробку всіх об'єктів ---
+    print('--All three--')
+    for obj in (bob, sue, tom):
+        obj.giveRaise(0.10)  # викличе метод giveRaise конкретного об’єкта
+        print(obj)            # викличе метод __str__ конкретного об’єкта

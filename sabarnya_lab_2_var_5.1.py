@@ -11,12 +11,13 @@ class Auto(Land):
 class Boat(Water):
     pass
 class Gibrid(Land, Water):
-    pass
+    def get_info(self):
+        return "це гібридний транспорт"
 
-# Перевірка результатів
+
 boat = Boat()
 gibrid = Gibrid()
 auto = Land()
 print(f"Boat: {boat.get_info()}")
 print(f"Gibrid: {gibrid.get_info()}")
-print(f"Auto; {auto.get_info()}")
+print(f"Auto: {auto.get_info()}")

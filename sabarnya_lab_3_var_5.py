@@ -1,52 +1,29 @@
-# Файл person.py - опис класів
+import shelve
+import dbm
+from sabarnya_lab_3_var_5_Vehicle import Vehicle, Truck
 
-class Person:
-    def __init__(self, name, job=None, pay=0):
-        self.name = name
-        self.job = job
-        self.pay = float(pay)
+if __name__ == '__main__':
+    my_car = Vehicle('Audi', 'A6', 50000)
+    my_truck = Truck('BMW', 'X6', 120000, 20)
 
-    def lastName(self):  # метод, який повертає прізвище
-        return self.name.split()[-1]
+    print("--- Тестування об'єктів ---")
+    print(my_car)
+    print(my_truck)
+    print(my_truck.loadCargo(15))
 
-    def giveRaise(self, percent):
-        self.pay = int(self.pay * (1 + percent))  # внесення змін
+    print("\n--- Збереження в Shelve ---")
+    with shelve.open('vehicles_shelve') as db:
+        db['Audi_Record'] = my_car
+        db['BMW_Record'] = my_truck
+    print("Об'єкти збережені!")
 
-    def __str__(self):
-        return '[%s, %s, %s]' % (self.name, self.job, self.pay)
+    with shelve.open('vehicles_shelve') as db:
+        print("\nЗміст Shelve:")
+        for key in db:
+            print(f"Ключ: {key} => {db[key]}")
 
-
-class Manager(Person):
-    def __init__(self, name, pay):  # перевизначений конструктор
-        # Виклик конструктора суперкласу зі значенням job='mgr'
-        super().__init__(name, 'mgr', pay)
-
-    def giveRaise(self, percent, bonus=0.10):
-        # Виклик методу суперкласу з додатковим бонусом
-        super().giveRaise(percent + bonus)
-
-
-if __name__ == '__main__':  # файл запускають для тестування
-    bob = Person('Bob Smith')
-    sue = Person('Sue Jones', job='dev', pay=100000)
-
-    print(bob)
-    print(sue)
-
-    print(bob.lastName(), ';', sue.lastName())
-
-    sue.giveRaise(0.10)  # використовують методи
-    print(sue)
-
-    print("-" * 20)
-
-    tom = Manager('Tom Jones', 50000)
-    tom.giveRaise(0.10)    # Виклик адаптованої версії
-    print(tom.lastName())  # Виклик успадкованого методу
-    print(tom)             # Виклик успадкованого __str__
-
-    print("-- All three --")
-    for obj in (bob, sue, tom):
-        # Обробка об‘єктів узагальненим способом (поліморфізм)
-        obj.giveRaise(0.10)  # викличе метод giveRaise відповідного класу
-        print(obj)           # викличе метод __str__
+    print("\n--- Збереження в DBM (як рядки) ---")
+    with dbm.open('vehicles_raw', 'c') as db:
+        data = f"{my_car.brand}|{my_car.model}|{my_car.price}"
+        db[b'car_1'] = data.encode('utf-8')
+    print("Рядок збережено в DBM!")

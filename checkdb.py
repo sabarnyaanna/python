@@ -1,5 +1,5 @@
 import shelve
-from sabarnya_lab_3_var_6 import Person, Manager # Обов'язково! Python має знати класи об'єктів
+from sabarnya_lab_3_var_7 import Person, Manager # Обов'язково! Python має знати класи об'єктів
 
 db = shelve.open('persondb')
 print("--- Вміст бази даних ---")
